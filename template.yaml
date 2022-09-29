@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  reinvent-2022-products
+
+  Sample SAM Template for reinvent-2022-products
+
+Globals:
+  Function:
+    Tracing: Active
+    Runtime: java11
+    Timeout: 30
+    MemorySize: 1024
+    Environment:
+      Variables:
+        PRODUCT_TABLE_NAME: !Ref ProductsTable
+  Api:
+    TracingEnabled: True
+
+Resources:
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Name: My Sample API
+
+  ProductsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: 'PK'
+          AttributeType: 'S'
+      KeySchema:
+        - AttributeName: 'PK'
+          KeyType: 'HASH'
+      BillingMode: PAY_PER_REQUEST
+
+  ProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ProductsFunction
+      Handler: software.amazonaws.example.handler.ProductHandler::handleRequest
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        GetById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /products/{id}
+            Method: get
+        GetAll:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /products
+            Method: get
+        Put:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /products/{id}
+            Method: put
+        Post:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /products
+            Method: post
+        Delete:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /products/{id}
+            Method: delete
+
+Outputs:
+  MyApi:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/prod/products"
+  LambdaFunction:
+    Description: "Products Lambda Function"
+    Value: !Sub ${ProductsFunction}
+  DynamoDBTable:
+    Description: "Products DynamoDB Table"
+    Value: !Sub ${ProductsTable}
