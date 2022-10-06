@@ -4,10 +4,11 @@
 package software.amazonaws.example.dao;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.core.SdkSystemSetting;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.http.crt.AwsCrtAsyncHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
@@ -36,6 +37,11 @@ public class DynamoProductDao implements ProductDao {
                     .key(Map.of("PK", AttributeValue.builder().s(id).build()))
                     .tableName(PRODUCT_TABLE_NAME)
                     .build()).get();
+
+            if(id.equals("ForceError")) {
+                // This simulates an error response from DynamoDb
+                throw new RuntimeException("BOOM");
+            }
 
             if (getItemResponse.hasItem()) {
                 return Optional.of(ProductMapper.productFromDynamoDB(getItemResponse.item()));
