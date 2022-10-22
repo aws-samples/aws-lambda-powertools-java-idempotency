@@ -20,41 +20,6 @@
         </executions>
         <configuration />
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>aspectj-maven-plugin</artifactId>
-        <version>1.14.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-          <complianceLevel>1.8</complianceLevel>
-          <aspectLibraries>
-            <aspectLibrary>
-              <groupId>software.amazon.lambda</groupId>
-              <artifactId>powertools-tracing</artifactId>
-            </aspectLibrary>
-            <aspectLibrary>
-              <groupId>software.amazon.lambda</groupId>
-              <artifactId>powertools-logging</artifactId>
-            </aspectLibrary>
-            <aspectLibrary>
-              <groupId>software.amazon.lambda</groupId>
-              <artifactId>powertools-metrics</artifactId>
-            </aspectLibrary>
-            <aspectLibrary>
-              <groupId>software.amazon.lambda</groupId>
-              <artifactId>powertools-idempotency</artifactId>
-            </aspectLibrary>
-          </aspectLibraries>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <dependencyManagement>
@@ -71,6 +36,5 @@
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
-    <power.tools.version>1.12.3</power.tools.version>
   </properties>
 </project>

@@ -37,6 +37,11 @@ public class DynamoProductDao implements ProductDao {
                     .tableName(PRODUCT_TABLE_NAME)
                     .build()).get();
 
+            if(id.equals("ForceError")) {
+                // This simulates an error response from DynamoDb
+                throw new RuntimeException("BOOM");
+            }
+
             if (getItemResponse.hasItem()) {
                 return Optional.of(ProductMapper.productFromDynamoDB(getItemResponse.item()));
             } else {
