@@ -4,6 +4,14 @@ Description: >
   reinvent-2022-products
 
   Sample SAM Template for reinvent-2022-products
+Parameters:
+  MetricsNamespace:
+    Type: String
+    Default: ServerlessProductApp
+  ServiceName:
+    Type: String
+    Default: ProductService
+
 
 Globals:
   Function:
@@ -14,10 +22,10 @@ Globals:
     Environment:
       Variables:
         PRODUCT_TABLE_NAME: !Ref ProductsTable
-        POWERTOOLS_SERVICE_NAME: ProductService
+        POWERTOOLS_SERVICE_NAME: !Ref ServiceName
         IDEMPOTENCY_TABLE: !Ref IdempotencyTable
         POWERTOOLS_LOG_LEVEL: INFO
-        POWERTOOLS_METRICS_NAMESPACE: ServerlessProductApp
+        POWERTOOLS_METRICS_NAMESPACE: !Ref MetricsNamespace
 
   Api:
     TracingEnabled: True
@@ -94,6 +102,49 @@ Resources:
         AttributeName: ttl
         Enabled: true
       BillingMode: PAY_PER_REQUEST
+  Svs307Dashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: SVS307
+      DashboardBody: !Sub '
+        {
+            "widgets": [
+                {
+                    "height": 3,
+                    "width": 6,
+                    "y": 0,
+                    "x": 0,
+                    "type": "metric",
+                    "properties": {
+                        "metrics": [
+                            [ "${MetricsNamespace}", "ColdStart", "FunctionName", "${ProductsFunction}", "Service", "${ServiceName}" ]
+                        ],
+                        "sparkline": true,
+                        "view": "singleValue",
+                        "region": "${AWS::Region}",
+                        "stat": "Average",
+                        "period": 300
+                    }
+                },
+                {
+                    "height": 3,
+                    "width": 6,
+                    "y": 0,
+                    "x": 6,
+                    "type": "metric",
+                    "properties": {
+                        "metrics": [
+                            [ "${MetricsNamespace}", "SuccessfulProductCreation", "Service", "${ServiceName}" ]
+                        ],
+                        "sparkline": true,
+                        "view": "singleValue",
+                        "region": "${AWS::Region}",
+                        "stat": "Sum",
+                        "period": 300
+                    }
+                }
+            ]
+        }'
 
 Outputs:
   MyApi:
