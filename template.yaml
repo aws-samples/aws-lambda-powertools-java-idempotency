@@ -33,7 +33,9 @@ Resources:
       KeySchema:
         - AttributeName: 'PK'
           KeyType: 'HASH'
-      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 20
+        WriteCapacityUnits: 20
 
   ProductsFunction:
     Type: AWS::Serverless::Function
