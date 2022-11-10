@@ -114,7 +114,7 @@ Resources:
         {
             "widgets": [
                 {
-                    "height": 3,
+                    "height": 4,
                     "width": 6,
                     "y": 0,
                     "x": 0,
@@ -131,7 +131,7 @@ Resources:
                     }
                 },
                 {
-                    "height": 3,
+                    "height": 4,
                     "width": 6,
                     "y": 0,
                     "x": 6,
